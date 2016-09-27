@@ -1,5 +1,6 @@
 package br.fcv.poc.web;
 
+import static akka.pattern.Patterns.ask;
 import static br.fcv.poc.core.MyJavaActor.Message.WHAT_TIME_IS_IT;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
