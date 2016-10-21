@@ -30,6 +30,6 @@ public class RandomGeneratorController {
 		String random = UUID.randomUUID().toString();
 		String destination = "/topic/random";
 		messageTemplate.convertAndSend(destination, random);
-		logger.debug("broadcast random value '{}' to '{}'", random, destination);
+		logger.trace("broadcast random value '{}' to '{}'", random, destination);
 	}
 }
