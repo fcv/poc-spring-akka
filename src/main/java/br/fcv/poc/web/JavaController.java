@@ -2,10 +2,13 @@ package br.fcv.poc.web;
 
 import static akka.pattern.Patterns.ask;
 import static br.fcv.poc.core.MyJavaActor.Message.WHAT_TIME_IS_IT;
+import static java.lang.Thread.currentThread;
+import static java.util.Collections.singletonList;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.http.ResponseEntity.status;
+import static scala.collection.JavaConversions.asScalaBuffer;
 
 import javax.inject.Inject;
 
@@ -16,11 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import scala.collection.immutable.List;
 import scala.concurrent.Future;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.dispatch.OnSuccess;
 import br.fcv.poc.ActorDesc;
+import br.fcv.poc.core.ClockServiceBean.ClockInfo;
+import br.fcv.poc.core.ClockServiceBean.TraceItem;
 import br.fcv.poc.core.MyJavaActor;
 import br.fcv.poc.core.MyScalaActor;
 import br.fcv.poc.core.MyScalaActor.WhatTimeIsIt;
@@ -69,7 +75,9 @@ public class JavaController {
 			message = WHAT_TIME_IS_IT;
 		} else {
 			targetActor = scalaActor;
-			message = new WhatTimeIsIt();
+			TraceItem traceItem = new TraceItem(this.getClass(), currentThread());
+			List<TraceItem> trace = asScalaBuffer(singletonList(traceItem)).toList();
+			message = new WhatTimeIsIt(trace);
 		}
 
 		Future<Object> future = ask(targetActor, message, timeout);
@@ -78,6 +86,11 @@ public class JavaController {
 			@Override
 			public void onSuccess(Object obj) throws Throwable {
 				logger.debug("nonblockingIndex.onSuccess(obj: {})", obj);
+				if (obj instanceof ClockInfo<?>) {
+					ClockInfo<?> clockInfo = (ClockInfo<?>) obj;
+					clockInfo = clockInfo.appendTraceItem(new TraceItem(JavaController.this.getClass(), currentThread()));
+					obj = clockInfo;
+				}
 				result.setResult(ok(obj));
 			}
 		}, system.dispatcher());

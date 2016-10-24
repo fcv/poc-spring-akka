@@ -21,6 +21,10 @@ import akka.util.Timeout
 import br.fcv.poc.ActorDesc
 import br.fcv.poc.core.MyScalaActor
 import javax.inject.Inject
+import java.lang.Thread.currentThread
+
+import br.fcv.poc.core.ClockServiceBean.{ClockInfo, TraceItem => JTraceItem}
+import org.springframework.web.context.request.async.DeferredResult.DeferredResultHandler
 
 @RestController
 @RequestMapping(value = Array("/"))
@@ -47,12 +51,22 @@ class ScalaController(
 			result setErrorResult status(REQUEST_TIMEOUT)
 		})
 
+		result onCompletion (() => {
+			logger.debug("open.onCompletion()")
+		})
+
+		result setResultHandler new DeferredResultHandler {
+			override def handleResult(result: scala.Any): Unit = {
+				logger.debug("open.handleResult(result: {})", result)
+			}
+		}
+
 		implicit val dispatcher = actorSystem.dispatcher
 
-		(scalaActor ? MyScalaActor.WhatTimeIsIt()) onComplete {
-			case Success(value) => {
+		(scalaActor ? MyScalaActor.WhatTimeIsIt(List(TraceItem(this.getClass, currentThread)))) onComplete {
+			case Success(value: ClockInfo[_]) => {
 				logger.debug("open.onSuccess(value: {})", value)
-				result setResult (ok(value))
+				result setResult (ok(value.appendTraceItem(TraceItem(this.getClass, currentThread))))
 			}
 			case Failure(ex) => {
 				logger.debug("open.onFailure()", ex)
@@ -62,4 +76,8 @@ class ScalaController(
 
 		result
 	}
+}
+
+object TraceItem {
+	def apply(clss: Class[_], thread: Thread) = new JTraceItem(clss, thread)
 }
