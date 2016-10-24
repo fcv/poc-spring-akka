@@ -1,12 +1,13 @@
 package br.fcv.poc.core;
 
-import static akka.japi.pf.ReceiveBuilder.matchEquals;
-import static br.fcv.poc.core.MyJavaActor.Message.WHAT_TIME_IS_IT;
+import static akka.japi.pf.ReceiveBuilder.match;
+import static java.lang.Thread.currentThread;
 import static java.util.Objects.requireNonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 import java.time.Instant;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Component;
 
 import akka.actor.AbstractActor;
 import br.fcv.poc.core.ClockServiceBean.ClockInfo;
+import br.fcv.poc.core.ClockServiceBean.TraceItem;
+
+import com.google.common.collect.ImmutableList;
 
 @Component
 @Scope(SCOPE_PROTOTYPE)
@@ -23,21 +27,40 @@ public class MyJavaActor extends AbstractActor {
 
 	private static final Logger logger = getLogger(MyJavaActor.class);
 
-	public static enum Message {
-		WHAT_TIME_IS_IT
-	}
-
 	private final ClockServiceBean clockService;
 
 	@Inject
 	public MyJavaActor(ClockServiceBean clockService) {
 		this.clockService = requireNonNull(clockService, "clockService cannot be null");
 
-		receive(matchEquals(WHAT_TIME_IS_IT, m -> {
+		receive(match(WhatTimeIsIt.class, m -> {
 
 			logger.debug("receive(GREET, {})", m);
 			ClockInfo<Instant> instant = this.clockService.getInstant();
+			instant = instant.prependTraceItem(new TraceItem(this.getClass(), currentThread()));
+			instant = instant.prependTraceItems(m.trace);
 			sender().tell(instant, self());
 		}).build());
+	}
+
+	public static class WhatTimeIsIt {
+
+		private final List<TraceItem> trace;
+
+		public WhatTimeIsIt() {
+			this(ImmutableList.of());
+		}
+
+		public WhatTimeIsIt(List<TraceItem> trace) {
+			this.trace = ImmutableList.copyOf(trace);
+		}
+
+		public static WhatTimeIsIt whatTimeIsIt() {
+			return new WhatTimeIsIt();
+		}
+
+		public static WhatTimeIsIt whatTimeIsIt(List<TraceItem> trace) {
+			return new WhatTimeIsIt(trace);
+		}
 	}
 }

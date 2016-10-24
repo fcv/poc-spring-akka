@@ -1,7 +1,7 @@
 package br.fcv.poc.web;
 
 import static akka.pattern.Patterns.ask;
-import static br.fcv.poc.core.MyJavaActor.Message.WHAT_TIME_IS_IT;
+import static br.fcv.poc.core.MyJavaActor.WhatTimeIsIt.whatTimeIsIt;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.singletonList;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -69,13 +69,13 @@ public class JavaController {
 		Object message;
 		long timeout = 1000L;
 
+		TraceItem traceItem = new TraceItem(this.getClass(), currentThread());
 		boolean dispatchToJavaActor = "java".equals(actorType);
 		if (dispatchToJavaActor) {
 			targetActor = javaActor;
-			message = WHAT_TIME_IS_IT;
+			message = whatTimeIsIt(singletonList(traceItem));
 		} else {
 			targetActor = scalaActor;
-			TraceItem traceItem = new TraceItem(this.getClass(), currentThread());
 			List<TraceItem> trace = asScalaBuffer(singletonList(traceItem)).toList();
 			message = new WhatTimeIsIt(trace);
 		}

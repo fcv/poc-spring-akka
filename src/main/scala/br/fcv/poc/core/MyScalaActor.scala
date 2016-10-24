@@ -7,6 +7,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory._
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 import javax.inject.Inject
+import java.lang.Thread.currentThread
 
 import br.fcv.poc.core.ClockServiceBean.TraceItem
 
@@ -17,7 +18,7 @@ class MyScalaActor @Inject()(clockService: ClockServiceBean) extends Actor {
 	override def receive: Receive = {
 		case MyScalaActor.WhatTimeIsIt(trace) => {
 			val instant = clockService.getInstant
-			sender ! instant.prependTraceItems(trace.asJava)
+			sender ! instant.prependTraceItems((trace :+ (new TraceItem(this.getClass, currentThread))).asJava)
 		}
 	}
 }

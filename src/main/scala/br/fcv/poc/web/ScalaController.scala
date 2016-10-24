@@ -1,30 +1,25 @@
 package br.fcv.poc.web
 
-import scala.concurrent.duration.DurationInt
-import scala.util.Failure
-import scala.util.Success
+import java.lang.Thread.currentThread
+import javax.inject.Inject
 
-import org.springframework.http.HttpStatus.REQUEST_TIMEOUT
-import org.springframework.http.ResponseEntity
-import org.springframework.http.ResponseEntity.ok
-import org.springframework.http.ResponseEntity.status
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.async.DeferredResult
-
-import com.typesafe.scalalogging.StrictLogging
-
-import akka.actor.ActorRef
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import br.fcv.poc.ActorDesc
-import br.fcv.poc.core.MyScalaActor
-import javax.inject.Inject
-import java.lang.Thread.currentThread
-
 import br.fcv.poc.core.ClockServiceBean.{ClockInfo, TraceItem => JTraceItem}
+import br.fcv.poc.core.{MyJavaActor, MyScalaActor}
+import com.typesafe.scalalogging.StrictLogging
+import org.springframework.http.HttpStatus.REQUEST_TIMEOUT
+import org.springframework.http.ResponseEntity
+import org.springframework.http.ResponseEntity.{ok, status}
+import org.springframework.web.bind.annotation.{RequestMapping, RequestParam, RestController}
+import org.springframework.web.context.request.async.DeferredResult
 import org.springframework.web.context.request.async.DeferredResult.DeferredResultHandler
+
+import scala.collection.JavaConverters._
+import scala.concurrent.duration.DurationInt
+import scala.util.{Failure, Success}
 
 @RestController
 @RequestMapping(value = Array("/"))
@@ -35,14 +30,18 @@ class ScalaController(
 
 			@Inject
 			@ActorDesc(value = classOf[MyScalaActor], name = "MyScalaActor-01")
-			private val scalaActor:ActorRef
+			private val scalaActor:ActorRef,
+
+			@Inject
+			@ActorDesc(value = classOf[MyJavaActor], name = "MyJavaActor-01")
+			private val javaActor:ActorRef
 		) extends StrictLogging {
 
 	implicit def funToRunnable(fun: () => _) = new Runnable() { def run() = fun() }
 	implicit val timeout = Timeout(1 second)
 
 	@RequestMapping
-	def open(): DeferredResult[ResponseEntity[_ <: Any]] = {
+	def open(@RequestParam(value = "actorType", defaultValue = "scala") actorType: String): DeferredResult[ResponseEntity[_ <: Any]] = {
 
 		logger.debug("open()")
 
@@ -62,8 +61,14 @@ class ScalaController(
 		}
 
 		implicit val dispatcher = actorSystem.dispatcher
+		val trace = List(TraceItem(this.getClass, currentThread))
+		val (actor, msg) = if ("scala".equalsIgnoreCase(actorType)) {
+			(scalaActor, MyScalaActor.WhatTimeIsIt(trace))
+		} else {
+			(javaActor, MyJavaActor.WhatTimeIsIt.whatTimeIsIt(trace.asJava))
+		}
 
-		(scalaActor ? MyScalaActor.WhatTimeIsIt(List(TraceItem(this.getClass, currentThread)))) onComplete {
+		(actor ? msg) onComplete {
 			case Success(value: ClockInfo[_]) => {
 				logger.debug("open.onSuccess(value: {})", value)
 				result setResult (ok(value.appendTraceItem(TraceItem(this.getClass, currentThread))))
