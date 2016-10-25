@@ -1,6 +1,5 @@
 package br.fcv.poc.web
 
-import java.lang.Thread.currentThread
 import javax.inject.Inject
 
 import akka.actor.{ActorRef, ActorSystem}
@@ -60,7 +59,7 @@ class ScalaController(
 		}
 
 		implicit val dispatcher = actorSystem.dispatcher
-		val trace = List(TraceItem(this.getClass, currentThread))
+		val trace = List(TraceItem(this))
 		val (actor, msg) = if ("scala".equalsIgnoreCase(actorType)) {
 			(scalaActor, MyScalaActor.WhatTimeIsIt(trace))
 		} else {
@@ -70,7 +69,7 @@ class ScalaController(
 		(actor ? msg) onComplete {
 			case Success(value: ClockInfo[_]) => {
 				logger.debug("getInstant.onSuccess(value: {})", value)
-				result setResult (ok(value.appendTraceItem(TraceItem(this.getClass, currentThread))))
+				result setResult (ok(value.appendTraceItem(TraceItem(this))))
 			}
 			case Failure(ex) => {
 				logger.debug("getInstant.onFailure()", ex)
@@ -84,4 +83,5 @@ class ScalaController(
 
 object TraceItem {
 	def apply(clss: Class[_], thread: Thread) = new TraceItem(clss, thread)
+	def apply(instance: AnyRef) = new TraceItem(instance)
 }

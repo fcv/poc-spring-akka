@@ -2,7 +2,6 @@ package br.fcv.poc.web;
 
 import static akka.pattern.Patterns.ask;
 import static br.fcv.poc.core.MyJavaActor.WhatTimeIsIt.whatTimeIsIt;
-import static java.lang.Thread.currentThread;
 import static java.util.Collections.singletonList;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpStatus.REQUEST_TIMEOUT;
@@ -69,7 +68,7 @@ public class JavaController {
 		Object message;
 		long timeout = 1000L;
 
-		TraceItem traceItem = new TraceItem(this.getClass(), currentThread());
+		TraceItem traceItem = new TraceItem(this);
 		boolean dispatchToJavaActor = "java".equals(actorType);
 		if (dispatchToJavaActor) {
 			targetActor = javaActor;
@@ -88,7 +87,7 @@ public class JavaController {
 				logger.debug("getInstant.onSuccess(obj: {})", obj);
 				if (obj instanceof ClockInfo<?>) {
 					ClockInfo<?> clockInfo = (ClockInfo<?>) obj;
-					clockInfo = clockInfo.appendTraceItem(new TraceItem(JavaController.this.getClass(), currentThread()));
+					clockInfo = clockInfo.appendTraceItem(new TraceItem(JavaController.this));
 					obj = clockInfo;
 				}
 				result.setResult(ok(obj));

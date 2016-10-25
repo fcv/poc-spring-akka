@@ -1,7 +1,6 @@
 package br.fcv.poc.core;
 
 import static akka.japi.pf.ReceiveBuilder.match;
-import static java.lang.Thread.currentThread;
 import static java.util.Objects.requireNonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
@@ -35,7 +34,7 @@ public class MyJavaActor extends AbstractActor {
 
 			logger.debug("receive(GREET, {})", m);
 			ClockInfo<Instant> instant = this.clockService.getInstant();
-			instant = instant.prependTraceItem(new TraceItem(this.getClass(), currentThread()));
+			instant = instant.prependTraceItem(new TraceItem(this));
 			instant = instant.prependTraceItems(m.trace);
 			sender().tell(instant, self());
 		}).build());

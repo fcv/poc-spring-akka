@@ -1,6 +1,5 @@
 package br.fcv.poc.web;
 
-import static java.lang.Thread.currentThread;
 import br.fcv.poc.core.ClockInfo;
 import br.fcv.poc.core.TraceItem;
 
@@ -17,7 +16,7 @@ public class SerializationConverter extends StdConverter<ClockInfo<?>, ClockInfo
 
 	@Override
 	public ClockInfo<?> convert(ClockInfo<?> value) {
-		return value.appendTraceItem(new TraceItem(this.getClass(), currentThread()));
+		return value.appendTraceItem(new TraceItem(this));
 	}
 
 }

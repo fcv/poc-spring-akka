@@ -13,7 +13,7 @@ public class ClockServiceBean {
 		Thread currrentThread = Thread.currentThread();
 		String provider = currrentThread.getName();
 		Instant now = Instant.now();
-		return new ClockInfo<>(provider, new TraceItem(this.getClass(), currrentThread), now);
+		return new ClockInfo<>(provider, new TraceItem(this), now);
 	}
 
 }

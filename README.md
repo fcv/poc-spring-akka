@@ -22,32 +22,37 @@ System is started up using an embedded Tomcat 8 instance and may be reached thou
 
     $ curl "localhost:8080/api/rest/v1/instant"
     {
-      "provider": "poc-spring-akka-akka.actor.default-dispatcher-5",
+      "provider": "poc-spring-akka-akka.actor.default-dispatcher-8",
       "trace": [
         {
-          "className": "br.fcv.poc.web.ScalaController",
-          "threadName": "http-nio-8080-exec-6"
+          "className": "br.fcv.poc.web.JavaController",
+          "instanceId": "1504716407",
+          "threadName": "http-nio-8080-exec-10"
         },
         {
-          "className": "br.fcv.poc.core.MyScalaActor",
-          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-5"
+          "className": "br.fcv.poc.core.MyJavaActor",
+          "instanceId": "1198113276",
+          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-8"
         },
         {
           "className": "br.fcv.poc.core.ClockServiceBean",
-          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-5"
+          "instanceId": "623022533",
+          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-8"
         },
         {
-          "className": "br.fcv.poc.web.ScalaController",
-          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-4"
+          "className": "br.fcv.poc.web.JavaController",
+          "instanceId": "1504716407",
+          "threadName": "poc-spring-akka-akka.actor.default-dispatcher-8"
         },
         {
           "className": "br.fcv.poc.web.SerializationConverter",
-          "threadName": "http-nio-8080-exec-7"
+          "instanceId": "848640841",
+          "threadName": "http-nio-8080-exec-1"
         }
       ],
       "info": {
-        "nano": 566000000,
-        "epochSecond": 1477332726
+        "nano": 377000000,
+        "epochSecond": 1477411634
       }
     }
 
