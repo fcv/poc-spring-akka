@@ -1,0 +1,7 @@
+.loading-indicator {
+	display: none;
+}
+
+.loading i.loading-indicator {
+	display: inline-block;
+}

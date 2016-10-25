@@ -24,11 +24,23 @@ $(function($) {
 				data: data
 			});
 
+			$form.addClass('loading');
 			$.ajax(reqOpts)
 				.done(function(data, statusText, jqXHR) {
 					
 					$('.output-console', $mainPainel)
 						.text(JSON.stringify(data, null, 2));
+				})
+				.fail(function(jqXHR, textStatus, errorThrown) {
+					alert('ERROR: \n' + JSON.stringify({
+							statusCode: jqXHR.status,
+							statusText: textStatus,
+							response: jqXHR.responseJSON,
+							error: errorThrown
+						}, null, 2));
+				})
+				.always(function() {
+					$form.removeClass('loading');
 				});
 		});
 	};
