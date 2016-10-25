@@ -79,7 +79,7 @@ public class ClockServiceBean {
 
 		@Override
 		public String toString() {
-			return format("{provided: %s, value: %s}", provider, value);
+			return format("{provider: %s, value: %s}", provider, value);
 		}
 	}
 
