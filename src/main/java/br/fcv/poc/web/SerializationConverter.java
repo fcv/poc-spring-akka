@@ -1,8 +1,8 @@
 package br.fcv.poc.web;
 
 import static java.lang.Thread.currentThread;
-import br.fcv.poc.core.ClockServiceBean.ClockInfo;
-import br.fcv.poc.core.ClockServiceBean.TraceItem;
+import br.fcv.poc.core.ClockInfo;
+import br.fcv.poc.core.TraceItem;
 
 import com.fasterxml.jackson.databind.util.StdConverter;
 

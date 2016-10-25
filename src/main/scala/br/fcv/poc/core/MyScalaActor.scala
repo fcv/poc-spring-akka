@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component
 import javax.inject.Inject
 import java.lang.Thread.currentThread
 
-import br.fcv.poc.core.ClockServiceBean.TraceItem
-
 @Component
 @Scope(SCOPE_PROTOTYPE)
 class MyScalaActor @Inject()(clockService: ClockServiceBean) extends Actor {

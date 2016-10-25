@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import akka.actor.AbstractActor;
-import br.fcv.poc.core.ClockServiceBean.ClockInfo;
-import br.fcv.poc.core.ClockServiceBean.TraceItem;
 
 import com.google.common.collect.ImmutableList;
 

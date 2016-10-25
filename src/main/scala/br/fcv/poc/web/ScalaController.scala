@@ -7,8 +7,7 @@ import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import br.fcv.poc.ActorDesc
-import br.fcv.poc.core.ClockServiceBean.{ClockInfo, TraceItem => JTraceItem}
-import br.fcv.poc.core.{MyJavaActor, MyScalaActor}
+import br.fcv.poc.core.{ClockInfo, MyJavaActor, MyScalaActor, TraceItem}
 import com.typesafe.scalalogging.StrictLogging
 import org.springframework.http.HttpStatus.REQUEST_TIMEOUT
 import org.springframework.http.ResponseEntity
@@ -84,5 +83,5 @@ class ScalaController(
 }
 
 object TraceItem {
-	def apply(clss: Class[_], thread: Thread) = new JTraceItem(clss, thread)
+	def apply(clss: Class[_], thread: Thread) = new TraceItem(clss, thread)
 }
