@@ -32,7 +32,7 @@ import br.fcv.poc.core.MyScalaActor;
 import br.fcv.poc.core.MyScalaActor.WhatTimeIsIt;
 
 @RestController
-@RequestMapping(value = "/api/rest/v1", params = "controllerType=java")
+@RequestMapping(value = "/api/rest/v1/instant", params = "controllerType=java")
 public class JavaController {
 
 	private static final Logger logger = getLogger(JavaController.class);
@@ -54,10 +54,10 @@ public class JavaController {
 	}
 
 	@RequestMapping()
-	public DeferredResult<ResponseEntity<?>> nonblockingIndex(
+	public DeferredResult<ResponseEntity<?>> getInstant(
 			@RequestParam(value = "actorType", defaultValue = "scala") String actorType) {
 
-		logger.debug("nonblockingIndex(actorType: {})", actorType);
+		logger.debug("getInstant(actorType: {})", actorType);
 
 		final DeferredResult<ResponseEntity<?>> result = new DeferredResult<>();
 
@@ -85,7 +85,7 @@ public class JavaController {
 
 			@Override
 			public void onSuccess(Object obj) throws Throwable {
-				logger.debug("nonblockingIndex.onSuccess(obj: {})", obj);
+				logger.debug("getInstant.onSuccess(obj: {})", obj);
 				if (obj instanceof ClockInfo<?>) {
 					ClockInfo<?> clockInfo = (ClockInfo<?>) obj;
 					clockInfo = clockInfo.appendTraceItem(new TraceItem(JavaController.this.getClass(), currentThread()));

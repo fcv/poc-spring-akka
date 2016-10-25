@@ -20,7 +20,7 @@ Or
 
 System is started up using an embedded Tomcat 8 instance and may be reached thought http://localhost:8080/ address. Example:
 
-    $ curl "localhost:8080/api/rest/v1"
+    $ curl "localhost:8080/api/rest/v1/instant"
     {
       "provider": "poc-spring-akka-akka.actor.default-dispatcher-5",
       "trace": [
@@ -50,3 +50,5 @@ System is started up using an embedded Tomcat 8 instance and may be reached thou
         "epochSecond": 1477332726
       }
     }
+
+The main purpose of such REST endpoint is to show how process is handled by different Threads in different parts of request's workflow.

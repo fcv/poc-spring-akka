@@ -22,7 +22,7 @@ import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
 
 @RestController
-@RequestMapping(value = Array("/api/rest/v1"))
+@RequestMapping(value = Array("/api/rest/v1/instant"))
 class ScalaController(
 
 			@Inject
@@ -41,9 +41,9 @@ class ScalaController(
 	implicit val timeout = Timeout(1 second)
 
 	@RequestMapping
-	def open(@RequestParam(value = "actorType", defaultValue = "scala") actorType: String): DeferredResult[ResponseEntity[_ <: Any]] = {
+	def getInstant(@RequestParam(value = "actorType", defaultValue = "scala") actorType: String): DeferredResult[ResponseEntity[_ <: Any]] = {
 
-		logger.debug("open()")
+		logger.debug("getInstant()")
 
 		val result = new DeferredResult[ResponseEntity[_ <: Any]]
 		result.onTimeout(() => {
@@ -51,12 +51,12 @@ class ScalaController(
 		})
 
 		result onCompletion (() => {
-			logger.debug("open.onCompletion()")
+			logger.debug("getInstant.onCompletion()")
 		})
 
 		result setResultHandler new DeferredResultHandler {
 			override def handleResult(result: scala.Any): Unit = {
-				logger.debug("open.handleResult(result: {})", result)
+				logger.debug("getInstant.handleResult(result: {})", result)
 			}
 		}
 
@@ -70,11 +70,11 @@ class ScalaController(
 
 		(actor ? msg) onComplete {
 			case Success(value: ClockInfo[_]) => {
-				logger.debug("open.onSuccess(value: {})", value)
+				logger.debug("getInstant.onSuccess(value: {})", value)
 				result setResult (ok(value.appendTraceItem(TraceItem(this.getClass, currentThread))))
 			}
 			case Failure(ex) => {
-				logger.debug("open.onFailure()", ex)
+				logger.debug("getInstant.onFailure()", ex)
 				result setErrorResult (ex)
 			}
 		}
