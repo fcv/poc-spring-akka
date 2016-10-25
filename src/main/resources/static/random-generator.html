@@ -14,28 +14,48 @@
 			Javascript! Websocket relies on Javascript being enabled. Please
 			enable Javascript and reload this page!</h2>
 	</noscript>
-	<div id="main-content" class="container">
 
-		<div class="row">
-			<button type="button" class="connect-trigger">Connect</button>
-			<button type="button" class="disconnect-trigger">Disconnect</button>
-			<button type="button" class="clean-trigger">Clean</button>
-		</div>
+	<div class="container">
 
-		<div class="row">
-			<div class="col-md-12">
-				<table class="table table-striped output-table">
-					<thead>
-						<tr>
-							<th>Timestamp</th>
-							<th>Message</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header"></div>
+			</div>
+
+			<div id="navbar" class="navbar-collapse collapse">
+				<a class="navbar-brand" href="/">POC Spring Akka</a>
+				<ul class="nav navbar-nav">
+					<li><a href="/">Home</a></li>
+					<li class="active"><a href="/random-generator.html">Random Generator (WebSocket)</a></li>
+					<li><a href="/rest-api.html">REST (Actors)</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<div id="main-content" class="container">
+
+			<div class="row">
+				<button type="button" class="btn btn-default connect-trigger">Connect</button>
+				<button type="button" class="btn btn-default disconnect-trigger">Disconnect</button>
+				<button type="button" class="btn btn-default clean-trigger">Clean</button>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<table class="table table-striped output-table">
+						<thead>
+							<tr>
+								<th>Timestamp</th>
+								<th>Message</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
+
 </body>
 </html>

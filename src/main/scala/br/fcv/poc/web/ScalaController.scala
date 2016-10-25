@@ -22,7 +22,7 @@ import scala.concurrent.duration.DurationInt
 import scala.util.{Failure, Success}
 
 @RestController
-@RequestMapping(value = Array("/"))
+@RequestMapping(value = Array("/api/rest/v1"))
 class ScalaController(
 
 			@Inject

@@ -32,7 +32,7 @@ import br.fcv.poc.core.MyScalaActor;
 import br.fcv.poc.core.MyScalaActor.WhatTimeIsIt;
 
 @RestController
-@RequestMapping(value = "/", params = "controllerType=java")
+@RequestMapping(value = "/api/rest/v1", params = "controllerType=java")
 public class JavaController {
 
 	private static final Logger logger = getLogger(JavaController.class);
