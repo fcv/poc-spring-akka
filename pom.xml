@@ -46,6 +46,20 @@
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<!--
+			spring-boot-devtools provides:
+			 - hot swapping
+			 - disables template engines cache
+			 - live reload
+			@see http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-devtools
+			@see https://spring.io/guides/gs/serving-web-content/#_developing_web_apps
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
 		<!-- /spring boot -->
 
 		<!-- web client dependencies -->
